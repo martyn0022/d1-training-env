@@ -5,9 +5,5 @@
       "username": "_SYSTEM"
     }
   },
-  "objectscript.conn": {
-    "server": "d1dev",
-    "ns": "D1DEV",
-    "active": false
-  }
+  "objectscript.conn": { "server": "d1dev", "ns": "D1DEV", "active": true }
 }

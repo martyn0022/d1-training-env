@@ -35,12 +35,22 @@ docker compose logs -f iris
 
 Wait for `[d1-setup] complete.` Then press Ctrl-C to stop following the log.
 
+That line appears on the **first** start only. The setup is guarded by a
+sentinel, so later starts print
+`[d1-setup] already set up on <date> -- nothing to do.` instead. That is also
+success — it means your namespace, classes and data survived the restart.
+Either way the hook ends with `[d1-setup] hook finished`.
+
 **Stop.** Give IRIS time to shut down cleanly — a hard kill leaves the write
 image journal dirty and the next start spends minutes recovering:
 
 ```bash
 docker compose down -t 60
 ```
+
+`docker-compose.yml` sets the same 60 seconds as `stop_grace_period`, so a
+plain `docker compose down` is safe too. The flag is kept here so the command
+still says what it is doing.
 
 **Restart** (your work is preserved):
 
@@ -70,6 +80,13 @@ data, and rebuilds from scratch:
 docker compose down -t 60 && rm -rf data/durable/* && docker compose up -d --build
 ```
 
+On **Linux** the files under `data/durable` belong to uid 51773, so the `rm`
+needs `sudo`:
+
+```bash
+docker compose down -t 60 && sudo rm -rf data/durable/* && docker compose up -d --build
+```
+
 ---
 
 ## Login
@@ -91,8 +108,9 @@ Management Portal, in VS Code and in Postman.
 
 ### VS Code
 
-Point the InterSystems ObjectScript extension at the **web server** port,
-not the superserver:
+The connection is already set up. Install the **InterSystems ObjectScript
+Extension Pack**, then open this folder in VS Code — that is enough. The
+settings ship in `.vscode/settings.json`:
 
 ```jsonc
 {
@@ -105,6 +123,9 @@ not the superserver:
   "objectscript.conn": { "server": "d1dev", "ns": "D1DEV", "active": true }
 }
 ```
+
+Enter the password `SYS` when VS Code asks. Note the port: the extension uses
+the **web server** (52773), not the superserver (9091).
 
 ---
 
@@ -232,7 +253,9 @@ Expect `"response_code":"200"` and **one** `preauth` row, `REQ000000P1`.
 
 ## Troubleshooting
 
-**`[d1-setup] complete.` never appears.** Read the whole log:
+**`[d1-setup] complete.` never appears.** On anything but the first start
+that is expected — you get `[d1-setup] already set up ... nothing to do.`
+instead. If this *is* the first start, read the whole log:
 `docker compose logs iris`. The setup prints `[d1-setup] FAILED:` with the
 reason if it could not finish.
 
@@ -261,6 +284,7 @@ Windows Docker Desktop handle this for you.
 ## Files
 
 ```
+.vscode/settings.json       the VS Code connection to D1DEV
 docker-compose.yml          the container, ports and volume
 Dockerfile                  copies src/, setup/ and merge.cpf into the image
 merge.cpf                   creates the D1DEV namespace; clears forced password change
