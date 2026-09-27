@@ -6,4 +6,4 @@ set -e
 
 echo "[d1-setup] running first-start setup"
 iris session IRIS -U %SYS < /opt/d1/setup/setup.script
-echo "[d1-setup] done"
+echo "[d1-setup] hook finished"

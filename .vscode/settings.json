@@ -1,0 +1,13 @@
+{
+  "intersystems.servers": {
+    "d1dev": {
+      "webServer": { "host": "localhost", "port": 52773 },
+      "username": "_SYSTEM"
+    }
+  },
+  "objectscript.conn": {
+    "server": "d1dev",
+    "ns": "D1DEV",
+    "active": false
+  }
+}

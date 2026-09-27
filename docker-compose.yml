@@ -4,6 +4,8 @@ services:
     image: d1-training-env:latest
     hostname: iris
     container_name: d1-iris
+    # Plain "docker compose down" also gets 60s: a hard kill leaves the WIJ dirty.
+    stop_grace_period: 60s
     # Bound to 127.0.0.1: the login is public, so keep the instance off the
     # attendee's network.
     ports:
