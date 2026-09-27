@@ -1,0 +1,3 @@
+data/durable/*
+!data/durable/.gitkeep
+.DS_Store

@@ -1,0 +1,5 @@
+[Actions]
+CreateDatabase:Name=D1DEV,Directory=/dur/iris_conf.d/mgr/D1DEV
+CreateNamespace:Name=D1DEV,Globals=D1DEV,Routines=D1DEV
+ModifyUser:Name=_SYSTEM,ChangePassword=0,PasswordNeverExpires=1
+ModifyUser:Name=SuperUser,ChangePassword=0,PasswordNeverExpires=1
