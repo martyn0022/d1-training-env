@@ -1,7 +1,4 @@
-/// Group-2 visit_info table (NEW in data dictionary V1.0.2). Written by
-/// PostPreAuth's snapshot (person.visit_number + complaint_info) -- currently
-/// the ONLY write path; the spec defines no read API for it yet (plan open
-/// item 11).
+/// visit_info table: one row per hospital visit.
 Class D1.Mock.Data.ClaimVisit Extends %Persistent
 {
 
@@ -21,11 +18,7 @@ Property DepartmentCode As %String(MAXLEN = 50);
 
 Property DepartmentName As %String(MAXLEN = 100);
 
-/// DUPLICATE, to be retired. Data dictionary V1.0.3 introduced
-/// patient_chiefcomplain_info (D1.Mock.Data.ClaimChiefComplaint), which
-/// PostPreAuth now also writes with this same value. Both are kept because
-/// the dictionary still lists chief_complaint on visit_info. Remove THIS one
-/// once it drops off visit_info -- GetDocumentInfo reads the other table.
+/// Also held, keyed by admission, in D1.Mock.Data.ClaimChiefComplaint.
 Property ChiefComplaint As %String(MAXLEN = 500);
 
 Property UpdateDate As %String(MAXLEN = 30);

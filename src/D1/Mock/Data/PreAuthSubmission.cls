@@ -1,6 +1,6 @@
 /// One flat row per pre-authorization submission -- the full-fidelity archive
-/// of the raw payload. The same submission is also projected into the group-2
-/// tables that API_D1GetPreAuthInfo actually reads (see PreAuthStoreOperation).
+/// of the raw payload, alongside the ClaimPreAuth row read by
+/// /local/preauth-info.
 /// 
 /// Single-valued wire objects get ordinary columns; the three genuinely
 /// repeating arrays (procedure_info, diagnosis, benefits) get columns holding
@@ -27,7 +27,7 @@ Property HospitalCode As %String(MAXLEN = 50);
 /// crud_status as sent on the request that produced this row
 Property CrudStatus As %String(MAXLEN = 1);
 
-/// auth_status as sent (V1.0.6) -- also projected onto ClaimPreAuth.ClaimStatus
+/// auth_status as sent -- also projected onto ClaimPreAuth.ClaimStatus
 Property AuthStatus As %String(MAXLEN = 50);
 
 Property SubmitDate As %String(MAXLEN = 30);
@@ -43,9 +43,8 @@ Property PersonHospitalNumber As %String(MAXLEN = 50);
 
 Property PersonVisitNumber As %String(MAXLEN = 50);
 
-/// Stripped of dashes to fit the data dictionary's varchar(13) -- the wire
-/// value ("3-1258-00558-89-8") is 18 characters; only PersonHospitalNumber
-/// and the other person fields keep this row's raw-archive fidelity.
+/// Stripped of dashes to fit varchar(13) -- the wire value is dashed, e.g.
+/// "3-1258-00558-89-8". The other person fields are stored as sent.
 Property CitizenId As %String(MAXLEN = 13);
 
 Property PassportId As %String(MAXLEN = 30);
@@ -81,7 +80,7 @@ Property DiagnosisCodes As %String(MAXLEN = 500);
 
 Property DiagnosisNames As %String(MAXLEN = 2000);
 
-// --- policies (single object in V1.0.3 -- plain scalar columns) ---
+// --- policies (single object -- plain scalar columns) ---
 
 Property PolicyId As %String(MAXLEN = 50);
 

@@ -1,11 +1,6 @@
-/// Group-2 policy_info table (data dictionary V1.0.2). One row per admission
-/// (the natural PK per the dictionary) carrying the policy and its plan.
-/// Seeded as reference data by ClaimLoader; also snapshot-updated by
-/// PostDischarge's policies_info + insurer blocks.
-/// 
-/// company_name is new in dict V1.0.2. Note plan open item 12: PostPreAuth's
-/// policies block carries no company fields, so a pre-auth-only flow leaves
-/// CompanyCode/CompanyName as seeded (or empty for an unseeded admission).
+/// policy_info table. One row per admission (the natural PK) carrying the
+/// policy, its plan and the insurance company. Seeded as reference data by
+/// ClaimLoader.
 Class D1.Mock.Data.ClaimPolicy Extends %Persistent
 {
 
@@ -30,15 +25,9 @@ Property PlanName As %String(MAXLEN = 200);
 /// The unique key D1 and the insurer agree on
 Property PolicyNumber As %String(MAXLEN = 50);
 
-/// The insured person (insurer_info.insurer_id), as supplied by PostPreAuth's
-/// insurer block for THIS admission.
-/// 
-/// Beyond data dictionary V1.0.3, which provides no link between insurer_info
-/// and an admission. Storing what D1 sends is the alternative to inferring the
-/// link -- GetDocumentInfo previously matched the policy holder to the patient
-/// on citizen_id, which is wrong whenever someone claims under a dependant's
-/// policy. IRIS should not be deciding that; D1 already knows the answer and
-/// tells us.
+/// The insured person (insurer_info.insurer_id) for THIS admission -- which
+/// may differ from the patient, e.g. when claiming under a dependant's
+/// policy.
 Property InsurerId As %String(MAXLEN = 20);
 
 Index PolicyNumberIdx On PolicyNumber;

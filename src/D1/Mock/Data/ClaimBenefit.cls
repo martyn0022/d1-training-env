@@ -1,11 +1,10 @@
-/// Group-2 benefit_info table (data dictionary V1.0.2). Pure insurer
-/// REFERENCE data: nothing in the API spec ever writes maximum_amount /
-/// remaining_amount / coverage items -- ClaimLoader seeds them, the
-/// D1GetBenefit read serves them.
-/// 
+/// benefit_info table. Insurer REFERENCE data: no API writes
+/// maximum_amount / remaining_amount / coverage items -- ClaimLoader seeds
+/// them.
+///
 /// coverage_items is normalized into the D1.Mock.Data.CoverageItem child
-/// table (FK-by-string BenefitKey) rather than the dictionary's
-/// semi-structured text column -- keeps it queryable in the Portal.
+/// table (FK-by-string BenefitKey) rather than a semi-structured text
+/// column -- keeps it queryable in the Portal.
 Class D1.Mock.Data.ClaimBenefit Extends %Persistent
 {
 

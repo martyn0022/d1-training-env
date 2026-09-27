@@ -87,7 +87,7 @@ Management Portal, in VS Code and in Postman.
 |---|---|
 | Management Portal | <http://localhost:52773/csp/sys/UtilHome.csp> |
 | The API | <http://localhost:52773/api/d1claims> |
-| Superserver (VS Code, DB-API) | `localhost:9091` |
+| Superserver (DB-API, JDBC, ODBC) | `localhost:9091` |
 
 ### VS Code
 

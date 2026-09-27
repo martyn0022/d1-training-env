@@ -1,11 +1,8 @@
-/// Group-2 file_info table (data dictionary V1.0.2). Written by PostFiles;
-/// one row per attached file.
-/// 
-/// V1.0.2 dropped the source_url column and API_PostFiles V1.0.3 sends
-/// source_file (base64) instead -- the decoded BYTES are stored here in a
-/// binary stream, matching the API's own description ("Record into Database")
-/// literally. AdmissionNumber is indexed non-unique: multiple files per
-/// admission is the realistic case despite the sheet listing it as PK.
+/// file_info table: one row per file attached to a claim.
+///
+/// The file arrives base64-encoded on the wire; the decoded BYTES are stored
+/// here in a binary stream. AdmissionNumber is indexed non-unique: an
+/// admission can have several files.
 Class D1.Mock.Data.ClaimFile Extends %Persistent
 {
 
@@ -20,7 +17,7 @@ Index SourceIdx On (AdmissionNumber, SourceId) [ Unique ];
 
 Property HospitalNumber As %String(MAXLEN = 50);
 
-/// e.g. "RAMA9_receipt"
+/// e.g. "hospital_receipt"
 Property SourceName As %String(MAXLEN = 255);
 
 /// e.g. "pdf"

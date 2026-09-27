@@ -1,6 +1,5 @@
-/// Group-2 admission_info table (data dictionary V1.0.2). Written by
-/// PostDischarge's admission_info snapshot (and lightly seeded for
-/// cold-start smoke tests); read by D1GetAdmission.
+/// admission_info table: one row per hospital admission. Seeded by
+/// ClaimLoader.
 Class D1.Mock.Data.ClaimAdmission Extends %Persistent
 {
 

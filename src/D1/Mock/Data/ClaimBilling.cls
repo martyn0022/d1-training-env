@@ -1,5 +1,5 @@
-/// Group-2 billing_info table (data dictionary V1.0.2). Written by
-/// PostDischarge's billing_info block. Auto ID + DischargeId indexed.
+/// billing_info table: the bill for a discharge. Auto ID + DischargeId
+/// indexed.
 Class D1.Mock.Data.ClaimBilling Extends %Persistent
 {
 

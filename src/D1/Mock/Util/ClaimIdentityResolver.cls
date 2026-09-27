@@ -1,5 +1,4 @@
-/// Identity dispatch for the group-2 reads -- the local-table counterpart of
-/// HISOperation's HTTP resolver.
+/// Identity dispatch for the claim-table reads.
 /// 
 ///   HN / CID / PID -> ClaimPatient      VN -> ClaimVisit      AN -> ClaimAdmission
 /// 

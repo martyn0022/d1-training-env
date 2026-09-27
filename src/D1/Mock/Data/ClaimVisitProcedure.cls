@@ -1,6 +1,4 @@
-/// Group-2 visit_procedure table (NEW in data dictionary V1.0.2). Written by
-/// PostPreAuth's snapshot (procedure_info[]); one row per procedure per visit.
-/// No read API exists for it yet (plan open item 11).
+/// visit_procedure table: one row per procedure per visit.
 Class D1.Mock.Data.ClaimVisitProcedure Extends %Persistent
 {
 

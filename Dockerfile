@@ -7,7 +7,9 @@
 # No IRIS commands run at build time. The namespace is created by the CPF
 # merge (before the superserver opens) and the classes are loaded by the
 # -a hook (after IRIS is live) -- see docker-compose.yml.
-FROM containers.intersystems.com/intersystems/irishealth-community:latest-preview
+# Pinned by digest to the exact build this environment was tested on
+# (IRIS for Health 2026.3.0L.180.0 preview), so every attendee gets the same one.
+FROM containers.intersystems.com/intersystems/irishealth-community:latest-preview@sha256:737c0a31b8c171f649912fb3ad1ea92d52e208bf57729c6fab9f011dfe0ceda9
 
 USER root
 

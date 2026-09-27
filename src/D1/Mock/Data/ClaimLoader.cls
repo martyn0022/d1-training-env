@@ -1,20 +1,12 @@
-/// Wipes (and optionally reseeds) the group-2 claim tables. Run:
+/// Wipes (and optionally reseeds) the claim tables. Run:
 ///   Do ##class(D1.Mock.Data.ClaimLoader).Reset()
 /// or  CALL D1_Mock_Data.ClaimLoader_Reset()
-/// or over HTTP: POST /d1/reset {"reseed": "1"}
-/// 
-/// pReseed defaults to true for the direct/SQL entry points above, so
-/// existing callers (including the test suite's Setup) keep getting a
-/// reseeded demo dataset. The HTTP route defaults reseed to "0" instead --
-/// see D1.Mock.API.D1API.Reset.
-/// 
+///
 /// Two kinds of seed, both skipped when pReseed is false:
-///   reference data (ClaimPolicy / ClaimBenefit / CoverageItem) -- no API in
-///     the spec ever writes it, so without this D1GetBenefit cannot answer
-///   one demo claim thread (HN000001 / AN2026080001 / VN2026080001), taken
-///     from the data dictionary's first sample row per table
-/// 
-/// ClaimFile is not seeded: it fills via POST /files.
+///   reference data (ClaimPolicy / ClaimBenefit / CoverageItem)
+///   two demo claim threads (HN000001 / AN2026080001, HN000002 / AN2026080002)
+///
+/// ClaimFile is not seeded.
 Class D1.Mock.Data.ClaimLoader
 {
 
@@ -36,14 +28,12 @@ ClassMethod Reset(pReseed As %Boolean = 1) As %Status [ SqlProc ]
 		Do ##class(D1.Mock.Data.ClaimFile).%KillExtent()
 		Do ##class(D1.Mock.Data.ClaimChiefComplaint).%KillExtent()
 		Do ##class(D1.Mock.Data.ClaimInsurer).%KillExtent()
-		// Not Claim*-prefixed, but written by PostPreAuth and is exactly what
-		// its 409 duplicate check queries -- must be wiped alongside the rest
-		// or a repeat crud_status="0" test still 409s after a "reset".
+		// Not Claim*-prefixed, but part of the same data set -- wipe it too.
 		Do ##class(D1.Mock.Data.PreAuthSubmission).%KillExtent()
 
 		Quit:'pReseed
 
-		// --- Insurer reference data (never written by any API) ---
+		// --- Insurer reference data ---
 		$$$THROWONERROR(tSC, ..AddPolicy("AN2026080001", "HN000001", "AIA", "American International Assurance Co., Ltd", "POL000001", "AIA001", "AIA Health Gold", "AIA-TH-998821", "INS00001"))
 		$$$THROWONERROR(tSC, ..AddBenefit("AIA-TH-998821:ROOM", "AIA-TH-998821", "IPD", "Room and Board", "available", 1000000.00, 45000.00))
 		$$$THROWONERROR(tSC, ..AddCoverage("AIA-TH-998821:ROOM", "1.1", "ROOM", "Room & Board", "PerDay", 5000.00, "THB", "Maximum 30 days"))
@@ -52,9 +42,8 @@ ClassMethod Reset(pReseed As %Boolean = 1) As %Status [ SqlProc ]
 		$$$THROWONERROR(tSC, ..AddBenefit("AIA-TH-998821:ICU", "AIA-TH-998821", "IPD", "ICU", "exhausted", 300000.00, 0.00))
 		$$$THROWONERROR(tSC, ..AddCoverage("AIA-TH-998821:ICU", "1", "ICU001", "ICU Room", "PerDay", 15000.00, "THB", "Maximum 20 days"))
 
-		// --- One demo claim thread (data dictionary sample values) ---
-		// --- insurer_info: the INSURED PERSON, not the insurance company.
-		// Dictionary V1.0.3 sample keys INS00001..INS00005.
+		// --- First demo claim thread: fully decided ---
+		// insurer_info: the INSURED PERSON, not the insurance company.
 		$$$THROWONERROR(tSC, ..AddInsurer("INS00001", "1103701234567", "", "Mr.", "Somchai", "Sukjai", "male", "1985-04-15 00:00:00", "99 ถนนสุขุมวิท เขตวัฒนา กรุงเทพฯ 10110", "0812345678"))
 		$$$THROWONERROR(tSC, ..AddInsurer("INS00003", "", "N12345678", "Ms.", "Malee", "Wongsawat", "female", "1992-11-02 00:00:00", "55 Chiang Mai-Lamphun Road", "0897654321"))
 
@@ -66,26 +55,21 @@ ClassMethod Reset(pReseed As %Boolean = 1) As %Status [ SqlProc ]
 		$$$THROWONERROR(tSC, ..AddDiagnosis("AN2026080001", "HN000001", "PRIMARY", "E11.9", "Type 2 diabetes mellitus without complications"))
 		$$$THROWONERROR(tSC, ..AddPreAuth("REQ000000P1", "HN000001", "AN2026080001", "PA-2026-071122", "Pre-Accepted", "2026-07-09 20:50:15", 10000.00))
 		$$$THROWONERROR(tSC, ..AddDischarge("REQ000000D1", "HN000001", "AN2026080001", "GCL-12345", "Approved", "2026-08-06 09:00:00", 120000.00, "2026-08-06 09:05:00", "2026-08-05 00:00:00", "Mr.", "Anan", "Prasert", ""))
-		// --- A SECOND claim thread, deliberately still AWAITING A DECISION.
-		// The first thread is fully decided (Pre-Accepted / Approved), so
-		// without this GetRecordList correctly returns an empty worklist and
-		// there is nothing to demonstrate -- nor anything for PatchPreAuth and
-		// PatchDischarge to act on.
+		// --- A SECOND claim thread, deliberately still AWAITING A DECISION, so
+		// /preauth/patch has an undecided pre-auth to act on.
 		//
-		// Dated October so it cannot disturb the July (pre-auth) and August
-		// (discharge) ranges the date-range tests rely on. GetRecordList does
-		// not filter by date, so it appears regardless.
+		// Dated October so it stays outside the July and August ranges used by the
+		// date-range examples.
 		$$$THROWONERROR(tSC, ..AddPatient("HN000002", "1209909876543", "", "Ms.", "Malee", "Wongsawat", "female", "1992-11-02 00:00:00", "55 Chiang Mai-Lamphun Road", "0897654321"))
 		$$$THROWONERROR(tSC, ..AddAdmission("AN2026080002", "HN000002", "2026-10-01 00:00:00", "WARD-02", "Surgical Ward", "Standard Room", "A07", "2026-10-08 00:00:00", "2026-10-08 00:00:00", "7", 88000.00))
-		// Shares the policy number with the first thread, the way the data
-		// dictionary's own samples do -- policy_info's PK is admission_number.
+		// Shares the policy number with the first thread; policy_info's PK is
+		// admission_number.
 		$$$THROWONERROR(tSC, ..AddPolicy("AN2026080002", "HN000002", "AIA", "American International Assurance Co., Ltd", "POL000001", "AIA001", "AIA Health Gold", "AIA-TH-998821", "INS00003"))
 		$$$THROWONERROR(tSC, ..AddChiefComplaint("AN2026080002", "HN000002", "Abdominal pain for 2 days"))
-		// Awaiting a pre-auth decision -> appears in GetRecordList("Pre-Auth").
+		// Awaiting a pre-auth decision.
 		$$$THROWONERROR(tSC, ..AddPreAuth("REQ000000P2", "HN000002", "AN2026080002", "PA-2026-100077", "Pre-Authorize Submitted", "2026-10-02 09:15:00", 88000.00))
-		// Awaiting a discharge decision -> appears in GetRecordList("Discharge").
-		// gl_number and every authorization_* field are EMPTY, which is exactly
-		// the state PatchDischarge exists to resolve.
+		// Awaiting a discharge decision: gl_number and every authorization_*
+		// field are empty.
 		$$$THROWONERROR(tSC, ..AddDischarge("REQ000000D2", "HN000002", "AN2026080002", "", "Discharge Requested", "", "", "", "2026-10-08 00:00:00", "", "", "", ""))
 
 		$$$THROWONERROR(tSC, ..AddBilling("REQ000000D1", "HN000001", "AN2026080001", "THB", 150000.00, 5000.00, 145000.00, 2000.00, 143000.00))

@@ -1,4 +1,4 @@
-/// Request message for API_D1GetPreAuthInfo V1.0.3 -- a DATE-RANGE query
+/// Request message for POST /local/preauth-info -- a DATE-RANGE query
 /// with an optional identity filter.
 Class D1.Mock.Msg.D1GetPreAuthInfoRequest Extends (%RegisteredObject, %JSON.Adaptor)
 {
@@ -12,7 +12,7 @@ Property EndReqDate As %String(%JSONFIELDNAME = "end_reqdate", MAXLEN = 30) [ Re
 /// CID, PID, VN, HN, or AN
 Property IdentityType As %String(%JSONFIELDNAME = "identity_type", MAXLEN = 10) [ Required ];
 
-/// Optional per spec -- omit to get every pre-auth in the range
+/// Optional -- omit to get every pre-auth in the range
 Property IdentityNo As %String(%JSONFIELDNAME = "identity_no", MAXLEN = 50);
 
 Property HospitalCode As %String(%JSONFIELDNAME = "hospital_code", MAXLEN = 50);

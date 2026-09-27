@@ -1,5 +1,4 @@
-/// Child table of ClaimBenefit: one row per coverage item, normalized from
-/// the data dictionary's semi-structured coverage_items column. Loose
+/// Child table of ClaimBenefit: one row per coverage item. Loose
 /// FK-by-string (BenefitKey), matching the codebase convention -- no
 /// %Relationship. Seeded by ClaimLoader as insurer reference data.
 Class D1.Mock.Data.CoverageItem Extends %Persistent

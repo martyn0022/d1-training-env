@@ -8,8 +8,8 @@ Include %occStatus
 /// no date parsing is needed, and none is done -- storing dates verbatim is
 /// the codebase convention.
 ///
-/// V1.0.3 made preauth an ARRAY of self-contained rows, so a range spanning
-/// several admissions answers correctly.
+/// preauth is an ARRAY of self-contained rows, so a range spanning several
+/// admissions answers correctly.
 Class D1.REST.Impl.LocalPreAuthInfo Extends D1.REST.Base
 {
 

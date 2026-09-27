@@ -1,7 +1,5 @@
-/// Group-2 discharge_info table (data dictionary V1.0.3). Written by
-/// PostDischarge, then patched by PatchDischarge; read by D1GetDischargeInfo
-/// and GetDocumentInfo. Auto ID + DischargeId indexed
-/// (dictionary's composite PK, resolved per plan open item 3).
+/// discharge_info table: the discharge claim for an admission and the
+/// insurer's decision on it. Auto ID + DischargeId indexed.
 Class D1.Mock.Data.ClaimDischarge Extends %Persistent
 {
 
@@ -32,11 +30,8 @@ Property AuthorizationAmount As %Numeric(SCALE = 2);
 /// Guarantee letter issue date
 Property DischargeGlDate As %String(MAXLEN = 30);
 
-/// --- V1.0.3 additions. All of these arrive via PatchDischarge, which is
-/// the insurer's reply; PostDischarge cannot populate them. The dictionary
-/// marks the three authorization name fields Not NULL, but PatchDischarge
-/// marks them Optional -- a discharge posted before the insurer responds
-/// cannot satisfy both, so they are nullable here. Flagged to the spec owner.
+/// --- The insurer's decision. Empty until the insurer responds, so the
+/// authorization fields are nullable.
 /// When the patient was actually discharged, distinct from the
 /// authorization_date on which the insurer decided.
 Property DischargeDate As %String(MAXLEN = 30);

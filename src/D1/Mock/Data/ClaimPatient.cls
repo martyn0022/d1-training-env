@@ -1,15 +1,10 @@
-/// Group-2 patient_info table (D1-Claim data dictionary V1.0.2). IRIS's OWN
-/// claim-workflow store -- D1-spec field names directly, never raw Trak names,
-/// and never touched by any group-1 (live HIS) flow.
-/// 
-/// Populated by group 2's own POSTs: PostDischarge snapshots the claim_person
-/// block here; ClaimLoader lightly seeds one demo row for cold-start smoke
-/// tests. Dates are stored verbatim as sent (wire strings), matching the
-/// codebase convention.
+/// patient_info table: one row per patient, keyed by hospital number.
+/// Dates are stored verbatim as sent (wire strings), matching the codebase
+/// convention.
 Class D1.Mock.Data.ClaimPatient Extends %Persistent
 {
 
-/// Hospital number (MRN) -- the natural PK per the data dictionary
+/// Hospital number (MRN) -- the natural PK
 Property HospitalNumber As %String(MAXLEN = 50) [ Required ];
 
 Index HospitalIdx On HospitalNumber [ Unique ];
@@ -28,11 +23,10 @@ Property FirstName As %String(MAXLEN = 255);
 
 Property LastName As %String(MAXLEN = 255);
 
-/// "male" / "female" wire values (the dictionary's 1-char M/F is projected
-/// out at the API layer; the wire enum is what D1 sends and reads back)
+/// "male" / "female" wire values
 Property Gender As %String(MAXLEN = 20);
 
-/// Wire format yyyy-MM-dd HH:mm:ss (datetime per data dict V1.0.2)
+/// Wire format yyyy-MM-dd HH:mm:ss
 Property BirthDate As %String(MAXLEN = 20);
 
 Property Address As %String(MAXLEN = 255);

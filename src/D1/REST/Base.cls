@@ -1,20 +1,14 @@
 Include %occStatus
 
-/// Shared HTTP/JSON plumbing for the production-free D1 REST stack.
+/// Shared HTTP/JSON plumbing for the D1 REST endpoints.
 ///
 /// Every D1.REST.Impl class extends this and splits in two:
 ///   Handle() owns the HTTP contract -- read the body, validate, write JSON.
 ///   Run()    owns the logic and takes a message object, so %UnitTest can
-///            exercise it without a web request (and without a production).
+///            exercise it without a web request.
 ///
-/// D1.REST.Test is that test -- the seam is not speculative, it is the only
-/// way to check this code without standing up a web application first.
-///
-/// These endpoints answer straight from IRIS's own tables -- no business
-/// process to orchestrate, nothing to route, and no outbound call needing a
-/// configured adapter -- hence no production, no business service and no
-/// business operation. The Ensemble event log goes with them; Log() below
-/// keeps the write paths' audit line in messages.log instead.
+/// These endpoints answer straight from IRIS's own tables. Log() below
+/// writes the write paths' audit line to messages.log.
 Class D1.REST.Base Extends %RegisteredObject [ Abstract ]
 {
 
@@ -113,7 +107,7 @@ ClassMethod WriteEnvelope(pCode As %String, pMessage As %String) As %Status
 	Return $$$OK
 }
 
-/// Audit line for the write paths, replacing the production's $$$LOGINFO.
+/// Audit line for the write paths, written to messages.log.
 ClassMethod Log(pMessage As %String)
 {
 	Do ##class(%SYS.System).WriteToConsoleLog("[D1.REST] " _ pMessage)

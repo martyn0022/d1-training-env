@@ -1,6 +1,4 @@
-/// Group-2 patient_diagnosis_info table (data dictionary V1.0.2). Written by
-/// PostDischarge's diagnosis_info[] snapshot; one row per diagnosis per
-/// admission.
+/// patient_diagnosis_info table: one row per diagnosis per admission.
 Class D1.Mock.Data.ClaimDiagnosis Extends %Persistent
 {
 
@@ -10,7 +8,7 @@ Index AdmissionIdx On AdmissionNumber;
 
 Property HospitalNumber As %String(MAXLEN = 50);
 
-/// "PRIMARY" / "SECONDARY" (new column in dict V1.0.2)
+/// "PRIMARY" / "SECONDARY"
 Property DiagnosisType As %String(MAXLEN = 20);
 
 Property DiagnosisCode As %String(MAXLEN = 50);

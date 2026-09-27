@@ -1,20 +1,16 @@
-/// Group-2 insurer_info table, new in data dictionary V1.0.3.
-/// 
+/// insurer_info table.
+///
 /// NAME IS MISLEADING: this holds the INSURED PERSON -- the policyholder --
 /// not the insurance company. Its columns are a person's identity (citizen
-/// id, passport, name, gender, date of birth, address, phone), and the
-/// sample data is INS00001..INS00005 keyed by insurer_id.
+/// id, passport, name, gender, date of birth, address, phone), keyed by
+/// insurer_id.
 /// 
 /// The insurance COMPANY lives on policy_info as company_code/company_name
-/// (D1.Mock.Data.ClaimPolicy). Do not conflate the two: PostPreAuth's
-/// "insurer" block carries both concepts at once -- company_code and
-/// company_name go to ClaimPolicy, insurer_id and the name fields come here.
-/// 
-/// Written by PostPreAuth (upsert by InsurerId); read by GetDocumentInfo.
+/// (D1.Mock.Data.ClaimPolicy). Do not conflate the two.
 Class D1.Mock.Data.ClaimInsurer Extends %Persistent
 {
 
-/// Insured person's id, e.g. "INS00001". The dictionary's PK.
+/// Insured person's id, e.g. "INS00001"
 Property InsurerId As %String(MAXLEN = 20) [ Required ];
 
 Index InsurerIdIdx On InsurerId [ Unique ];
@@ -29,7 +25,7 @@ Property FirstName As %String(MAXLEN = 255);
 
 Property LastName As %String(MAXLEN = 255);
 
-/// "male" / "female", matching the dictionary's patient_info convention
+/// "male" / "female", matching ClaimPatient
 Property Gender As %String(MAXLEN = 10);
 
 /// Wire format yyyy-MM-dd HH:mm:ss, stored verbatim

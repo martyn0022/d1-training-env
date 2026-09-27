@@ -1,25 +1,10 @@
-/// Group-2 preauth_info table (data dictionary V1.0.2) -- the "official"
-/// data-dictionary record of a pre-authorization, read by D1GetPreAuthInfo.
-/// Written by PostPreAuth's snapshot (alongside the full-fidelity raw archive
-/// in PreAuthSubmission).
-/// 
-/// The dictionary lists a composite id+claim_id PK; modeled here as auto ID +
-/// ClaimId indexed, matching PreAuthSubmission's existing precedent (plan
-/// open item 3).
-/// 
-/// claim_id has NO source in the PostPreAuth request body -- IRIS generates
-/// it by explicit convention (plan open item 2): auth_id when sent, else
-/// "REQ-"_admission_number. claim_case_number ALSO has no source there, but
-/// unlike claim_id, IRIS does not invent one -- it stays empty until
-/// PatchPreAuth's own optional claim_case_number field supplies the real
-/// value (see PreAuthStoreOperation.SnapshotPreAuth).
-/// 
-/// claim_status came from the same generated-convention (always
-/// "Pre-Authorize Submitted" on insert) until V1.0.6 added auth_status
-/// (Required) to the PostPreAuth request -- IRIS now stores exactly what
-/// D1 sends, on both insert and update. That is the API spec's enum
-/// spelling ("Submitted"); the data dictionary's sample reads "Summitted"
-/// (sic), but the API contract is what D1 matches against.
+/// preauth_info table: one pre-authorization per claim, read by
+/// /local/preauth-info. Auto ID + ClaimId indexed.
+///
+/// claim_case_number stays empty until the insurer supplies it.
+///
+/// ClaimStatus uses the API spec's enum spelling ("Pre-Authorize
+/// Submitted").
 Class D1.Mock.Data.ClaimPreAuth Extends %Persistent
 {
 
@@ -39,14 +24,10 @@ Index AdmissionIdx On AdmissionNumber;
 /// Case number, e.g. "PA-2026-071122"
 Property ClaimCaseNumber As %String(MAXLEN = 50);
 
-/// Set by PostPreAuth's auth_status ("Waiting for Medical" / "Pre-Accepted" /
-/// "Rejected" / "Pre-Authorize Submitted") on insert or update, then kept
-/// current afterwards by PostDischarge/PatchDischarge's claim_status /
-/// discharge_status ("Waiting for Medical" / "Approved" / "Rejected" /
-/// "Discharge Requested") -- see PostDischargeOperation.SyncPreAuthStatus.
-/// The client wants this column to reflect the claim's OVERALL current
-/// status, not just its pre-auth stage, so it legitimately holds either
-/// enum depending on which API wrote it most recently.
+/// "Waiting for Medical" / "Pre-Accepted" / "Rejected" / "Pre-Authorize
+/// Submitted" at the pre-auth stage; later discharge statuses ("Approved",
+/// "Discharge Requested", ...) may overwrite it. It reflects the claim's
+/// OVERALL current status, not just its pre-auth stage.
 Property ClaimStatus As %String(MAXLEN = 50);
 
 /// Wire format yyyy-MM-dd HH:mm:ss, stored verbatim

@@ -1,8 +1,6 @@
-/// One preauth[] entry in API_D1GetPreAuthInfo's V1.0.3 response.
-/// 
-/// V1.0.3 moved hospital_number / admission_number ONTO each row (they were
-/// in shared wrapper blocks in V1.0.2) -- correct, since a date-range query
-/// can legitimately span several admissions.
+/// One preauth[] entry in the /local/preauth-info response. Each row carries
+/// its own hospital_number / admission_number, since a date-range query can
+/// span several admissions.
 Class D1.Mock.Msg.PreAuthDetail Extends (%SerialObject, %JSON.Adaptor, %XML.Adaptor)
 {
 
@@ -22,9 +20,8 @@ Property ClaimStatus As %String(%JSONFIELDNAME = "claim_status", MAXLEN = 50);
 /// Wire format yyyy-MM-dd HH:mm:ss
 Property SubmitDate As %String(%JSONFIELDNAME = "submit_date", MAXLEN = 30);
 
-/// V1.0.4 renumbered this block so estimated_cost is 3.7 -- a child of each
-/// preauth[] row. V1.0.3's numbering placed it outside the array, and it was
-/// built that way.
+/// Per row, not on the response root: a multi-row result needs one figure
+/// per pre-auth.
 Property EstimatedCost As %Numeric(%JSONFIELDNAME = "estimated_cost", SCALE = 2);
 
 Storage Default
